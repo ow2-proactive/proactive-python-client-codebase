@@ -29,7 +29,75 @@ For the latest features and bug fixes, you can also install directly from this r
 pip install --upgrade --pre proactive
 ```
 
-### Quick Example
+### Creating a Job with the Proactive Python SDK
+
+The Proactive Python SDK provides a convenient way to create and submit jobs to the ProActive Scheduler. Here's a step-by-step guide:
+
+#### 1. Import the SDK
+
+```python
+from proactive import getProActiveGateway
+```
+
+#### 2. Connect to the ProActive Server
+
+```python
+gateway = getProActiveGateway()
+```
+
+This function automatically looks for a `.env` file with your ProActive credentials. If it doesn't exist, it will prompt you to enter the server URL, username, and password.
+
+#### 3. Create a Job
+
+```python
+job = gateway.createJob("MyJobName")
+```
+
+Replace "MyJobName" with the desired name for your job.
+
+#### 4. Add Tasks to the Job
+
+You can add various types of tasks to your job using the gateway.createTask or gateway.createPythonTask methods. Here's an example of adding a Python task:
+
+```python
+task = gateway.createPythonTask("MyTaskName")
+task.setTaskImplementation("print('Hello from ProActive!')")
+job.addTask(task)
+```
+
+#### 5. (Optional) Configure Additional Settings
+
+- Variables: You can add job-level or task-level variables using `job.addVariable` and `task.addVariable`.
+- Dependencies: Set dependencies between tasks using `task.addDependency`.
+- Fork Environment: Configure the execution environment using `task.setForkEnvironment`.
+- Selection Script: Control where the task runs using `task.setSelectionScript`.
+- Pre or Post scripts: Add scripts that will run before and after the task execution using `task.setPreScript` or `task.setPostScript`.
+
+#### 6. Submit the Job
+
+```python
+job_id = gateway.submitJob(job)
+```
+
+This submits the job to the ProActive Scheduler and returns the job ID for tracking.
+
+#### 7. Monitor and Retrieve Results
+
+You can monitor the job status using `gateway.getJobStatus(job_id)` and retrieve the job output using `gateway.getJobOutput(job_id)`.
+
+#### 8. Close the Connection
+
+```python
+gateway.close()
+```
+
+This disconnects from the ProActive server and cleans up resources.
+
+Remember to replace the placeholders with your actual job and task names, and customize the task implementation with your desired Python code.
+
+For more detailed examples and advanced features, refer to the Proactive Python Client documentation and the examples repository mentioned in the provided text.
+
+## Quick Start Example
 
 Connecting to a ProActive Scheduler and submitting a simple job:
 
