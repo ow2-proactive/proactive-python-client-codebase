@@ -19,12 +19,8 @@ job = gateway.createJob("demo_python_module_job")
 
 print("Creating a proactive task...")
 task = gateway.createPythonTask("demo_python_module_task")
-task.addGenericInformation("PYTHON_COMMAND", "python3")
 task.addInputFile('demo_python_module/**')
 task.setTaskImplementation("""
-import os, sys
-sys.path.append(os.getcwd())  # Required to avoid ModuleNotFoundError
-
 from demo_python_module.mymodule import add_numbers
 x=1
 y=2
