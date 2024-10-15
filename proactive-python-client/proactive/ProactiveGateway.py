@@ -264,14 +264,14 @@ class ProActiveGateway:
                 # Get the absolute path of the temporary file
                 temp_file_path = os.path.abspath(temp_file.name)
                 # The file will be deleted when closed
-                self.logger.info(f'Temporary file created and will be deleted: {temp_file_path}')
+                self.logger.info('Temporary file created and will be deleted: {}'.format(temp_file_path))
                 # Copy the content to a new file
                 if local_file_path:
                     # local_copy_path = os.path.join(os.getcwd(), 'workflow.xml')
                     with open(local_file_path, 'wb') as local_copy_file:
                         temp_file.seek(0)
                         local_copy_file.write(temp_file.read())
-                    self.logger.info(f'Local copy of the temporary file created: {local_file_path}')
+                    self.logger.info('Local copy of the temporary file created: {}'.format(local_file_path))
                 StaxJobFactory = self.proactive_factory.create_stax_job_factory()
                 Job = StaxJobFactory.createJob(temp_file_path)
                 if job_name:
@@ -344,7 +344,7 @@ class ProActiveGateway:
         :param default_python: The default python to be used.
         :return: A ProactiveTask object set up for Python script execution.
         """
-        self.logger.info('Creating a Python task')
+        self.logger.info('Creating a Python task ' + task_name)
         return ProactivePythonTask(task_name, default_python)
 
     def createFlowScript(self, script_language=None):
@@ -456,7 +456,7 @@ class ProActiveGateway:
         :param debug: If set True, the submitted job will be printed for a debugging purpose
         :return: A Proactive job ready to be submitted
         """
-        self.logger.info('Building the job' + job_model.getJobName())
+        self.logger.info('Building the job ' + job_model.getJobName())
         return ProactiveJobBuilder(self.proactive_factory, job_model, self.debug, self.log4py_props_file).create().display(debug).getProactiveJob()
 
     def submitJob(self, job_model, debug=False):
@@ -468,7 +468,7 @@ class ProActiveGateway:
         :return: The ID of the submitted job.
         """
         proactive_job = self.buildJob(job_model, debug)
-        self.logger.info('Submitting the job' + job_model.getJobName())
+        self.logger.info('Submitting the job ' + job_model.getJobName())
         return self.proactive_scheduler_client.submit(proactive_job).longValue()
 
     def submitJobWithInputsAndOutputsPaths(self, job_model, input_folder_path='.', output_folder_path='.', debug=False):
@@ -482,7 +482,7 @@ class ProActiveGateway:
         :return: The submitted job ID
         """
         proactive_job = self.buildJob(job_model, debug)
-        self.logger.info('Submitting the job' + job_model.getJobName())
+        self.logger.info('Submitting the job ' + job_model.getJobName())
         return self.proactive_scheduler_client.submit(
             proactive_job,
             input_folder_path,
@@ -628,14 +628,14 @@ class ProActiveGateway:
         """
         return self.proactive_scheduler_client.waitForJob(str(job_id), timeout)
 
-    def waitJobIsFinished(self, job_id, time_to_check=.5):
+    def waitJobIsFinished(self, job_id, time_to_check=0.5):
         # Monitor job status
         is_finished = False
         while not is_finished:
             # Get the current state of the job
             job_status = self.getJobStatus(job_id)
             # Print the current job status
-            self.logger.debug(f"Current job status: {job_status}")
+            self.logger.debug("Current job status: {0}".format(job_status))
             # Check if the job has finished
             if job_status.upper() in ["FINISHED", "CANCELED", "FAILED"]:
                 is_finished = True
